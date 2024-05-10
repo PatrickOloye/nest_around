@@ -18,6 +18,7 @@ export class AuthService {
         const users = await this.usersService.find(email)
         if(users.length){
             throw new BadRequestException('email already exsists')
+            // throw new NotFoundException('email already exsists')
         }
         //Hash User Password
         const salt = randomBytes(8).toString('hex')
@@ -39,7 +40,7 @@ export class AuthService {
         const [salt, hash] = user.password.split('|');
         const newHash = (await scrypt(password, salt, 32) as Buffer)
         if(newHash.toString('hex')!== hash){
-            throw new BadRequestException('incorrect username or password')
+            throw new NotFoundException('incorrect username or password')
         }
         return user;
     }
